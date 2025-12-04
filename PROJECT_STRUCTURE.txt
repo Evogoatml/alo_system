@@ -1,0 +1,263 @@
+# ALO System - Project Structure
+
+## Core System Files
+
+main.py
+  - Entry point for the system
+  - Telegram bot interface
+  - Command handlers (/task, /learn, /status, etc.)
+  - Message routing
+
+react_engine.py
+  - Core ReAct reasoning loop
+  - Task classification
+  - Thought → Action → Observation → Reflection cycle
+  - Iterative execution with failure recovery
+
+rag_system.py
+  - Vector database (ChromaDB) integration
+  - Semantic search over knowledge base
+  - Document ingestion and chunking
+  - Context retrieval for tasks
+
+learning_system.py
+  - Experience memory storage (JSONL)
+  - Pattern recognition from past tasks
+  - Strategy playbook building
+  - Capability registration
+  - Self-improvement mechanisms
+
+action_executor.py
+  - Action execution with sandboxing
+  - Supports: bash, python, files, web, git, APIs
+  - Safe mode restrictions
+  - Timeout and resource management
+
+llm_interface.py
+  - Multi-provider LLM abstraction
+  - Supports: Anthropic, OpenAI, Local models
+  - Structured JSON response parsing
+  - Message history management
+
+prompts.py
+  - System prompts for LLM guidance
+  - ReAct loop instructions
+  - Task classification prompts
+  - Reflection prompts
+
+config.py
+  - Configuration management from .env
+  - Environment variable parsing
+  - Directory creation
+  - Validation
+
+utils.py
+  - Helper functions
+  - JSON parsing
+  - Text truncation
+  - Token counting
+
+## Configuration Files
+
+.env.template
+  - Template for environment variables
+  - Shows all configurable options
+  - Copy to .env and fill in values
+
+.env (user creates)
+  - Actual configuration with secrets
+  - Telegram bot token
+  - LLM API keys
+  - System settings
+
+requirements.txt
+  - Python dependencies
+  - Versions specified for stability
+
+## Documentation
+
+README.md
+  - Comprehensive documentation
+  - Installation instructions
+  - Usage examples
+  - Architecture explanation
+
+QUICKSTART.md
+  - 5-minute setup guide
+  - Step-by-step instructions
+  - Common commands
+
+PROJECT_STRUCTURE.txt (this file)
+  - Explains what each file does
+
+## Scripts
+
+setup.sh
+  - Automated setup script
+  - Creates venv
+  - Installs dependencies
+  - Creates directories
+
+test_system.py
+  - Validation script
+  - Tests imports
+  - Checks configuration
+  - Verifies components
+
+## Data Directories (created on first run)
+
+data/
+  vectordb/
+    - ChromaDB vector database files
+    - Embeddings and metadata
+  
+  memory/
+    experiences.jsonl
+      - All task execution records
+      - One JSON object per line
+    
+    patterns.json
+      - Recognized task patterns
+      - Success rates
+      - Common action sequences
+    
+    playbook.json
+      - Proven strategies
+      - Reusable approaches
+      - Capability registry
+
+workspace/
+  - Execution sandbox
+  - File operations happen here
+  - Safe mode restricts to this directory
+  
+  extensions/
+    - Self-created modules
+    - Dynamic capability additions
+
+logs/
+  alo.log
+    - System activity log
+    - Errors and warnings
+    - Debug information
+
+## Component Interactions
+
+User (Telegram)
+  ↓
+main.py (Bot Interface)
+  ↓
+react_engine.py (Orchestration)
+  ├→ rag_system.py (Context Retrieval)
+  ├→ learning_system.py (Experience Lookup)
+  ├→ action_executor.py (Execute Actions)
+  └→ llm_interface.py (LLM Reasoning)
+       ↓
+  External LLM Provider
+
+After task completion:
+  ↓
+learning_system.py (Store Experience)
+  ↓
+rag_system.py (Index for Future Use)
+
+## Key Design Patterns
+
+1. ReAct Loop
+   - Iterative reasoning
+   - Action execution
+   - Result observation
+   - Continuous reflection
+
+2. RAG Integration
+   - Semantic search
+   - Context-aware responses
+   - Knowledge accumulation
+
+3. Self-Learning
+   - Experience storage
+   - Pattern extraction
+   - Strategy evolution
+
+4. Sandboxed Execution
+   - Isolated workspace
+   - Resource limits
+   - Safe mode restrictions
+
+5. Multi-Provider Support
+   - LLM abstraction
+   - Easy provider switching
+   - Local model support
+
+## Extending the System
+
+To add new action types:
+1. Add method to action_executor.py
+2. Register in execute() switch
+3. Update prompts.py with action description
+
+To add new LLM provider:
+1. Create provider class in llm_interface.py
+2. Implement LLMProvider interface
+3. Add to provider_map
+
+To customize learning:
+1. Modify learning_system.py
+2. Adjust pattern recognition logic
+3. Update playbook strategy selection
+
+## Security Considerations
+
+- Safe mode limits file access
+- Code execution sandboxed
+- API keys in environment variables
+- Admin-only bot access
+- Audit logging enabled
+
+## Performance Notes
+
+- Vector DB queries: ~10-50ms
+- LLM calls: 1-5s depending on provider
+- Action execution: varies by action
+- Typical task: 10-30s total
+
+## Maintenance
+
+Regular tasks:
+- Check logs/alo.log for errors
+- Monitor data/ directory size
+- Update dependencies: pip install -U -r requirements.txt
+- Clear old experiences if needed
+
+Backup important data:
+- data/memory/ (experiences and playbook)
+- .env (configuration)
+- workspace/ (if contains important files)
+
+## Development Workflow
+
+1. Make changes to source files
+2. Test with: python test_system.py
+3. Run bot: python main.py
+4. Test via Telegram
+5. Check logs for issues
+6. Iterate
+
+## File Sizes (Approximate)
+
+main.py:              12 KB
+react_engine.py:      10 KB
+rag_system.py:         8 KB
+learning_system.py:   13 KB
+action_executor.py:   16 KB
+llm_interface.py:      6 KB
+prompts.py:            6 KB
+config.py:             3 KB
+utils.py:              1 KB
+
+Total system: ~75 KB of code
+
+Runtime data grows with usage:
+- Vector DB: 10-100 MB
+- Experiences: 1-10 MB
+- Logs: 1-50 MB

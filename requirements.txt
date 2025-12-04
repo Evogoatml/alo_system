@@ -1,0 +1,24 @@
+# Core Dependencies
+python-telegram-bot==20.7
+python-dotenv==1.0.0
+
+# LLM Providers
+anthropic==0.39.0
+openai==1.55.3
+
+# RAG & Embeddings
+chromadb==0.4.22
+sentence-transformers==2.3.1
+
+# Web & HTTP
+requests==2.31.0
+beautifulsoup4==4.12.3
+lxml
+
+# Utilities
+numpy
+pandas
+
+# Optional but Recommended
+torch  # For sentence-transformers
+psutil  # System monitoring
